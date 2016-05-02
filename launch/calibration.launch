@@ -1,0 +1,20 @@
+<launch>
+ <param name="use_sim_time" type="bool" value="false" />
+  <node pkg="arduino_robot" type="arduino_robot_node" name="robot">
+      <param name="serial_device" value="/dev/ttyACM3" />
+  </node>
+ 
+  <node pkg="thin_state_publisher" type="thin_state_publisher_node" name="tf_publisher" args="-base_link_frame_id base_link -odom_frame_id odom $(find thin_state_publisher)/transforms.txt" output="screen">
+  </node>
+  
+  <node pkg="thin_xtion" type="thin_xtion_node" name="xtion" output="screen">
+      <param name="device_num" value="0" />
+      <param name="depth_mode" value="0" />
+      <param name="rgb_mode" value="0" />
+      <param name="frame_skip" value="0" />
+      <param name="sync" value="1" />
+      <param name="registration" value="1" />
+  </node>
+
+ 
+</launch>

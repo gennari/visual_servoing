@@ -1,0 +1,42 @@
+<launch>
+ 
+  <!--node pkg="arduino_robot" type="arduino_robot_node" name="robot">
+      <param name="serial_device" value="/dev/ttyACM4" />
+  </node>
+ <node pkg="depth2laser" type="depth2laser2_node" name="laser">
+
+      <param name="publish_pointcloud" value="1" />
+      <param name="laser_plane_thickness" value="0.1" />
+
+  </node>
+  <node pkg="thin_state_publisher" type="thin_state_publisher_node" name="tf_publisher" args="-base_link_frame_id base_link -odom_frame_id odom $(find thin_state_publisher)/transforms.txt">
+  </node-->
+  <node pkg="stage_ros" type="stageros" name="stage" args="$(find stage_ros)/world/willow-erratic.world" output="screen" />
+  <node pkg="thin_xtion" type="thin_xtion_node" name="xtion" output="screen">
+      <param name="device_num" value="0" />
+      <param name="depth_mode" value="0" />
+      <param name="rgb_mode" value="0" />
+      <param name="frame_skip" value="2" />
+      <param name="sync" value="1" />
+      <param name="registration" value="1" />
+  </node>
+
+  <node pkg="apriltags_ros" type="apriltag_detector_node" name="apriltag_detector" output="screen">
+    <rosparam param="tag_descriptions">[
+      {id: 0, size: 0.064},
+      {id: 1, size: 0.064, frame_id: a_frame},
+      {id: 2, size: 0.064},
+      {id: 3, size: 0.064}]
+    </rosparam>
+    <remap from="/camera_info" to="/camera/rgb/camera_info"/>
+    <remap from="/image_rect" to="/camera/rgb/image_raw"/>
+  </node>
+
+  <node pkg="visual_servoing" type="visual_servoing_node" name="visual_servoing" output="screen" >
+       <remap from="/cmd_vel" to="/desired_cmd_vel"/>
+  </node>
+  <node pkg="odom_navigation" type="odom_navigation_node" name="odom_navigation" output="screen" >
+       <remap from="/cmd_vel" to="/desired_cmd_vel"/>
+  </node>
+  <node pkg="thin_joystick_teleop" type="joy_teleop_mux_node" name="joy" output="screen" />
+</launch>
